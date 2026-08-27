@@ -1,13 +1,11 @@
-# Architecture
+# MetaTruth v0.3.0
 
-Browser extension -> Meta Search landing page -> evidence adapter -> claim classifier -> review queue -> audit ledger.
+UI direction follows the supplied Image 5: dark navy glass panels, cyan graph visualization, compact vertical navigation, analytics cards, and luminous cyan accents.
 
-Production next step:
-- server-side signed identity registry
-- source adapters
-- evidence snapshots
-- append-only audit storage
-- authenticated report submission
-- moderation and appeal workflow
+Components:
+- extension/: Chrome MV3 client
+- landing/: search dashboard entry
+- admin/: judge/deployment preview
+- docs/: architecture
 
-Do not make a client-side 'immutable' shame database. True immutability belongs in a controlled audit system with append-only records, cryptographic hashes, access control, and an appeal/correction mechanism.
+Evidence adapters are demo-only in this release. No live third-party identity verification or public shaming mechanism is included.

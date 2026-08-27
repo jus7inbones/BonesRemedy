@@ -1,13 +1,1 @@
-<!doctype html><meta charset="utf-8">
-<style>
-body{font:14px system-ui;min-width:320px;padding:16px;background:#111;color:#eee}
-button{display:block;width:100%;margin:8px 0;padding:10px;border:0;border-radius:10px;cursor:pointer}
-.primary{background:#f3a712}.secondary{background:#292929;color:#fff}
-small{color:#aaa}
-</style>
-<h2>🕵️ MetaTruth</h2>
-<p>Bones investigates. Remedy reviews. The evidence gets a timestamp.</p>
-<button class="primary" id="search">🔎 Launch Meta Search</button>
-<button class="secondary" id="audit">📜 Open Audit Ledger</button>
-<small>No automatic accusations. No secret outbound messages. Human confirmation required.</small>
-<script src="popup.js"></script>
+<!doctype html><meta charset="utf-8"><style>body{margin:0;padding:16px;width:300px;background:#07101b;color:#eaf7ff;font:14px system-ui}button{width:100%;padding:11px;margin:6px 0;border:1px solid #1c5f78;border-radius:10px;background:#0d1e2c;color:#eaf7ff;cursor:pointer}.p{background:#083b4c;border-color:#19e7ff}</style><h2>🕵️ MetaTruth</h2><p>Bones investigates. Remedy reviews.</p><button class="p" id="s">🔎 Open Meta Search</button><button id="a">⚖️ Judge Review / Admin</button><script>s.onclick=()=>chrome.tabs.create({url:chrome.runtime.getURL("landing.html")});a.onclick=()=>chrome.tabs.create({url:chrome.runtime.getURL("admin.html")});</script>

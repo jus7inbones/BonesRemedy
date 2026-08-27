@@ -1,33 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "MetaTruth: Bones & Remedy",
-  "version": "0.2.0",
-  "description": "Evidence-first meta search and audit companion for investigating claims and identity conflicts.",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
-  "action": {
-    "default_title": "Open MetaTruth",
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "service_worker": "service-worker.js"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
-  "options_page": "options.html"
+  "name": "MetaTruth — Bones & Remedy",
+  "version": "0.3.0",
+  "description": "Evidence-first meta search, case review, and staged admin deployment dashboard.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {"default_title": "MetaTruth", "default_popup": "popup.html"},
+  "background": {"service_worker": "service-worker.js"},
+  "content_scripts": [{"matches": ["<all_urls>"], "js": ["content.js"], "run_at": "document_idle"}],
+  "options_page": "admin.html"
 }

@@ -1,15 +1,22 @@
-# MetaTruth — Bones × Remedy v0.2.0
+# MetaTruth — Bones × Remedy v0.3.0
 
-Forkable prototype:
-- `extension/` Chrome Manifest V3 extension
-- `landing/` standalone landing page
-- `data/` future signed identity/evidence data
-- `docs/` project documentation
+Chrome MV3 test package.
 
-Install:
-1. Extract the release ZIP.
-2. Open `chrome://extensions`.
+## Install
+1. Extract the ZIP.
+2. Open chrome://extensions.
 3. Enable Developer mode.
-4. Load unpacked -> select `extension/`.
+4. Click Load unpacked.
+5. Select the `extension` folder.
+6. Click the MetaTruth icon.
 
-The prototype deliberately uses audit drafts and evidence review rather than irreversible public shaming or automatic guilt findings. Chrome content scripts can be statically loaded on matching pages under Manifest V3. See Chrome's official extension documentation.
+## Included
+- Meta Search landing dashboard
+- Bones case creation
+- Remedy Judge Review
+- Admin staging deployment console
+- Demo audit-chain records
+- Image-5-inspired dark navy/cyan visual system
+
+## Guardrails
+This prototype does not automatically declare people guilty or automatically publish accusations. Public publication is locked. Production use should add authenticated server-side evidence storage, signed releases, access control, and correction/appeal workflows.
