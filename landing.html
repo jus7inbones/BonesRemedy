@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MetaTruth • Bones & Remedy</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color:#eee;background:#07090d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 10%,#26344d 0,#0a0d14 42%,#050608 100%);min-height:100vh}
+.wrap{max-width:1100px;margin:auto;padding:40px 22px}.top{display:flex;justify-content:space-between;align-items:center}
+.badge{padding:7px 10px;border:1px solid #394255;border-radius:999px;color:#b9c3d8;font-size:12px}
+.hero{padding:70px 0 35px;display:grid;grid-template-columns:1.2fr .8fr;gap:35px;align-items:center}
+h1{font-size:clamp(44px,7vw,88px);line-height:.9;margin:0 0 20px;letter-spacing:-.06em}
+.gold{color:#f3a712}.muted{color:#aab2c0}.panel{background:rgba(16,20,28,.8);border:1px solid #303746;border-radius:24px;padding:22px;box-shadow:0 20px 70px #0008}
+.search{display:flex;gap:10px}.search input{flex:1;padding:15px;border-radius:12px;border:1px solid #454d5e;background:#090b10;color:white}.search button{padding:15px 18px;border:0;border-radius:12px;background:#f3a712;font-weight:800}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.role{padding:18px;border-radius:16px;background:#111722;border:1px solid #303746}.role b{font-size:18px}
+.result{margin-top:20px;min-height:120px}.status{font-weight:800}.warning{color:#f3a712}.safe{color:#77e0a2}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.actions button{padding:11px 14px;border-radius:10px;border:1px solid #454d5e;background:#171c25;color:#fff}
+footer{padding:30px 0;color:#7f8795;font-size:12px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.roles{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<div class="top"><strong>🕵️ METATRUTH</strong><span class="badge">BONES × REMEDY • EVIDENCE MODE</span></div>
+<section class="hero">
+<div><div class="badge">THE INTERNET'S TINIEST COURTROOM</div><h1>Bones<br><span class="gold">sniffs.</span><br>Remedy <span class="gold">rules.</span></h1>
+<p class="muted">Search claims, inspect sources, record discrepancies, and prepare an audit report. No automatic guilt. Apparently we have to teach the robot manners.</p></div>
+<div class="panel"><h2>🔎 Meta Search</h2><div class="search"><input id="q" placeholder="Search a person, claim, site, or phrase"><button id="go">SEARCH</button></div>
+<div id="result" class="result"><span class="muted">Enter a search to begin the investigation.</span></div></div>
+</section>
+<div class="roles"><div class="role"><b>🕵️ Bones — Detective</b><p class="muted">Finds clues, compares claims, collects source URLs, and occasionally becomes personally offended by bad metadata.</p></div>
+<div class="role"><b>⚖️ Remedy — Judge</b><p class="muted">Reviews the evidence and delivers the final classification. Her finishing move is called “Cite Your Sources.”</p></div></div>
+<footer>MetaTruth prototype • Reports are drafts until a human confirms them. A report documents an evidence conflict; it does not establish criminal guilt.</footer>
+</div>
+<script>
+const q=document.getElementById('q'), r=document.getElementById('result');
+document.getElementById('go').onclick=()=>{
+ const v=q.value.trim();
+ if(!v){r.innerHTML='<span class="warning">Bones found nothing. The detective is staring at the empty search box.</span>';return;}
+ r.innerHTML=`<div class="status">🕵️ INVESTIGATION OPENED</div><p>Query: <b>${v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]))}</b></p><p class="muted">Prototype result: evidence collection is ready. Connect a search/evidence API to populate authoritative sources.</p><div class="actions"><button onclick="draft()">📜 Create Audit Draft</button><button onclick="alert('No guilty plea recorded. Remedy requires evidence, not button mashing.')">⚖️ Plead Guilty</button></div>`;
+};
+function draft(){
+ const entry={createdAt:new Date().toISOString(),query:q.value,status:'REVIEW_REQUIRED',note:'User-created audit draft. No guilt finding.'};
+ localStorage.setItem('metatruth:lastDraft',JSON.stringify(entry));
+ alert('Audit draft created. Nothing was published. Remedy has confiscated the gavel.');
+}
+</script></body></html>

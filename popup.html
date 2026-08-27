@@ -1,12 +1,13 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><title>MetaTruth</title>
-<style>body{font:14px system-ui;min-width:300px;padding:16px}h1{font-size:20px}button{padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid #bbb;background:#fff} .card{padding:10px;background:#f4f4f4;border-radius:10px;margin:8px 0}</style>
-</head><body>
-<h1>🕵️ MetaTruth</h1>
-<div class="card"><b>Bones</b><br>Detective Class: Supreme Snooper of Suspicious Sentences.</div>
-<div class="card"><b>Remedy</b><br>Judge Class: Keeper of the Tiny Gavel.</div>
-<p id="stats">Loading ledger...</p>
-<button id="openOptions">⚙️ Configure Presence Profiles</button>
-<button id="export">📜 Export Evidence Ledger</button>
+<!doctype html><meta charset="utf-8">
+<style>
+body{font:14px system-ui;min-width:320px;padding:16px;background:#111;color:#eee}
+button{display:block;width:100%;margin:8px 0;padding:10px;border:0;border-radius:10px;cursor:pointer}
+.primary{background:#f3a712}.secondary{background:#292929;color:#fff}
+small{color:#aaa}
+</style>
+<h2>🕵️ MetaTruth</h2>
+<p>Bones investigates. Remedy reviews. The evidence gets a timestamp.</p>
+<button class="primary" id="search">🔎 Launch Meta Search</button>
+<button class="secondary" id="audit">📜 Open Audit Ledger</button>
+<small>No automatic accusations. No secret outbound messages. Human confirmation required.</small>
 <script src="popup.js"></script>
-</body></html>
