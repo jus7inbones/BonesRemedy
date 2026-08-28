@@ -1,11 +1,5 @@
-# MetaTruth v0.3.0
+# MetaTruth v0.4.0
 
-UI direction follows the supplied Image 5: dark navy glass panels, cyan graph visualization, compact vertical navigation, analytics cards, and luminous cyan accents.
+Functional flow: create case -> open Google/Bing/DuckDuckGo searches -> inspect result -> use popup to capture active result page -> provenance record gets URL/title/timestamp/excerpt/SHA-256 -> Remedy reviews -> stage approved audit package.
 
-Components:
-- extension/: Chrome MV3 client
-- landing/: search dashboard entry
-- admin/: judge/deployment preview
-- docs/: architecture
-
-Evidence adapters are demo-only in this release. No live third-party identity verification or public shaming mechanism is included.
+The extension deliberately does not auto-declare guilt, auto-post reports, or silently collect full page contents. Evidence capture is a user action. This keeps the audit trail useful without turning browsing into covert surveillance.

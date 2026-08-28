@@ -1,22 +1,13 @@
-# MetaTruth — Bones × Remedy v0.3.0
-
-Chrome MV3 test package.
+# MetaTruth — Bones × Remedy v0.4.0
 
 ## Install
-1. Extract the ZIP.
-2. Open chrome://extensions.
+1. Extract `MetaTruth-Bones-Remedy-Chrome-v0.4.0.zip`.
+2. Open `chrome://extensions`.
 3. Enable Developer mode.
-4. Click Load unpacked.
-5. Select the `extension` folder.
-6. Click the MetaTruth icon.
+4. Click **Load unpacked** and select the extracted extension folder.
 
-## Included
-- Meta Search landing dashboard
-- Bones case creation
-- Remedy Judge Review
-- Admin staging deployment console
-- Demo audit-chain records
-- Image-5-inspired dark navy/cyan visual system
+## Functional workflow
+Create a case, open three search engines, inspect results, capture relevant active pages through the extension popup, review provenance hashes in Remedy Admin, then stage approved cases.
 
-## Guardrails
-This prototype does not automatically declare people guilty or automatically publish accusations. Public publication is locked. Production use should add authenticated server-side evidence storage, signed releases, access control, and correction/appeal workflows.
+## Dev tools
+`tools/run_tests.sh` validates Manifest V3 constraints, JavaScript syntax, missing files, remote resources, inline scripts/events, and unsafe eval patterns. `tools/build_release.py` creates a clean Chrome ZIP with SHA-256.
