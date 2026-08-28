@@ -1,0 +1,10 @@
+{
+  "rules": [
+    "Evidence is not automatically truth",
+    "No automatic public shaming/publication",
+    "Human review required",
+    "Explicit page capture",
+    "Corrections append to audit history",
+    "Staging before deployment"
+  ]
+}

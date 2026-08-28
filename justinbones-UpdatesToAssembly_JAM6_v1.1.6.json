@@ -1,0 +1,9 @@
+{
+  "release": "0.6.0",
+  "updates": [
+    "source adapters",
+    "hashed snapshots",
+    "appeals",
+    "corrections"
+  ]
+}

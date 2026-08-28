@@ -1,95 +1,17 @@
-
-importScripts("evidence-normalizer.js","source-scoring.js","claim-comparison.js");
-
-const D={cases:[],evidenceLedger:[],pageSnapshots:[],deployments:[],auditChain:[],sourceMatrix:[]};
-
+importScripts("evidence-normalizer.js","source-scoring.js","claim-comparison.js","adapters.js");
+const D={cases:[],evidenceLedger:[],snapshots:[],deployments:[],auditChain:[],appeals:[]};
 async function S(){return chrome.storage.local.get(D)}
 async function H(t){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t||""));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("")}
-async function audit(action,payload={}){
-  const s=await S(), p=s.auditChain.at(-1);
-  const material=JSON.stringify({action,payload,previousHash:p?.hash||null,timestamp:new Date().toISOString()});
-  const hash=await H(material);
-  s.auditChain.push({id:crypto.randomUUID(),timestamp:new Date().toISOString(),action,payload,previousHash:p?.hash||null,hash});
-  await chrome.storage.local.set(s)
-}
-
-chrome.runtime.onInstalled.addListener(async()=>{const s=await S();await chrome.storage.local.set(s);await audit("EXTENSION_INSTALLED",{version:"0.5.0"})});
-
-chrome.runtime.onMessage.addListener((m,sender,reply)=>{
-(async()=>{
- const st=await S();
-
- if(m.type==="PAGE_SNAPSHOT"){
-   st.pageSnapshots.unshift({...m.payload,id:crypto.randomUUID(),tabId:sender.tab?.id||null});
-   st.pageSnapshots=st.pageSnapshots.slice(0,100);
-   await chrome.storage.local.set(st);
-   return reply({ok:true});
- }
-
- if(m.type==="CREATE_CASE"){
-   const c={id:crypto.randomUUID(),createdAt:new Date().toISOString(),query:m.query||"",sourceUrl:m.sourceUrl||"",status:"REVIEW_REQUIRED",confidence:0,evidenceIds:[],decision:null};
-   st.cases.push(c);await chrome.storage.local.set(st);await audit("CASE_CREATED",{caseId:c.id,query:c.query});return reply(c);
- }
-
- if(m.type==="ADD_EVIDENCE"){
-   let e=EvidenceNormalizer.normalize(m.evidence||{});
-   if(!e.id)e.id=crypto.randomUUID();
-   const score=SourceScoring.score(e);
-   const c=st.cases.find(x=>x.id===m.caseId);
-   const cmp=ClaimComparison.assess(c?.query||e.claim||"",e);
-   e.quality=score;
-   e.comparison=cmp;
-   st.evidenceLedger=EvidenceNormalizer.dedupe([...st.evidenceLedger,e]);
-
-   if(c && !c.evidenceIds.includes(e.id)) c.evidenceIds.push(e.id);
-   st.sourceMatrix=st.evidenceLedger.map(x=>({
-      evidenceId:x.id,
-      caseId: st.cases.find(c=>c.evidenceIds.includes(x.id))?.id || null,
-      host: SourceScoring.hostOf(x?.source?.url||""),
-      sourceType:x?.quality?.type||"unknown",
-      qualityScore:x?.quality?.score||0,
-      relevance:x?.comparison?.relevance||0,
-      status:x.status||"UNREVIEWED"
-   }));
-
-   await chrome.storage.local.set(st);
-   await audit("EVIDENCE_NORMALIZED",{evidenceId:e.id,caseId:m.caseId||null,quality:score.score,relevance:cmp.relevance});
-   return reply(e);
- }
-
- if(m.type==="GET_CASE_MATRIX"){
-   const c=st.cases.find(x=>x.id===m.caseId);
-   const rows=(c?.evidenceIds||[]).map(id=>st.evidenceLedger.find(e=>e.id===id)).filter(Boolean).map(e=>({
-      evidenceId:e.id,
-      title:e.source?.title||"",
-      url:e.source?.url||"",
-      host:SourceScoring.hostOf(e.source?.url||""),
-      quality:e.quality?.score||0,
-      relevance:e.comparison?.relevance||0,
-      status:e.status||"UNREVIEWED",
-      reasons:e.quality?.reasons||[]
-   })).sort((a,b)=>(b.quality+b.relevance)-(a.quality+a.relevance));
-   return reply({case:c,rows});
- }
-
- if(m.type==="JUDGE_CASE"){
-   const c=st.cases.find(x=>x.id===m.caseId);if(!c)return reply({error:"case_not_found"});
-   const dec=["approve","reject","needs_more_evidence"].includes(m.decision)?m.decision:"needs_more_evidence";
-   c.status=dec==="approve"?"APPROVED_FOR_AUDIT":dec==="reject"?"REJECTED":"REVIEW_REQUIRED";
-   c.confidence=Math.max(0,Math.min(100,Number(m.confidence)||0));
-   c.decision={by:"Remedy",at:new Date().toISOString(),decision:dec,note:m.note||"",evidenceReviewed:c.evidenceIds.length};
-   await chrome.storage.local.set(st);await audit("JUDGE_DECISION",{caseId:c.id,decision:dec,confidence:c.confidence});return reply(c);
- }
-
- if(m.type==="STAGE_DEPLOYMENT"){
-   const d={id:crypto.randomUUID(),createdAt:new Date().toISOString(),version:"0.5.0",target:"staging",status:"STAGED",approvedCases:st.cases.filter(c=>c.status==="APPROVED_FOR_AUDIT").map(c=>c.id)};
-   st.deployments.push(d);await chrome.storage.local.set(st);await audit("DEPLOYMENT_STAGED",{deploymentId:d.id,version:d.version});return reply(d);
- }
-
- if(m.type==="EXPORT_REVIEW_BUNDLE"){
-   const payload={generatedAt:new Date().toISOString(),cases:st.cases,evidence:st.evidenceLedger,sourceMatrix:st.sourceMatrix,auditChain:st.auditChain,deployments:st.deployments};
-   payload.bundleHash=await H(JSON.stringify(payload));
-   return reply(payload);
- }
-})().catch(e=>reply({error:String(e)}));return true;
-});
+async function audit(action,payload={}){const s=await S(),p=s.auditChain.at(-1),timestamp=new Date().toISOString(),hash=await H(JSON.stringify({action,payload,timestamp,previousHash:p?.hash||null}));s.auditChain.push({id:crypto.randomUUID(),timestamp,action,payload,previousHash:p?.hash||null,hash});await chrome.storage.local.set(s)}
+chrome.runtime.onInstalled.addListener(async()=>{const s=await S();await chrome.storage.local.set(s);await audit("EXTENSION_INSTALLED",{version:"0.6.0"})});
+chrome.runtime.onMessage.addListener((m,sender,reply)=>{(async()=>{const st=await S();
+if(m.type==="CREATE_CASE"){const c={id:crypto.randomUUID(),createdAt:new Date().toISOString(),query:m.query||"",status:"REVIEW_REQUIRED",confidence:0,evidenceIds:[],appealIds:[],decision:null};st.cases.push(c);await chrome.storage.local.set(st);await audit("CASE_CREATED",{caseId:c.id});return reply(c)}
+if(m.type==="CAPTURE_SNAPSHOT"){const p=m.payload||{},snap={id:crypto.randomUUID(),capturedAt:new Date().toISOString(),url:p.url||"",title:p.title||"",excerpt:(p.excerpt||"").replace(/\s+/g," ").trim().slice(0,4000),adapters:MetaAdapters.identify(p.url||"")};snap.hash=await H(JSON.stringify(snap));st.snapshots.push(snap);await chrome.storage.local.set(st);await audit("SNAPSHOT_CAPTURED",{snapshotId:snap.id,hash:snap.hash});return reply(snap)}
+if(m.type==="ADD_EVIDENCE"){let e=EvidenceNormalizer.normalize(m.evidence||{});if(!e.id)e.id=crypto.randomUUID();e.quality=SourceScoring.score(e);const c=st.cases.find(x=>x.id===m.caseId);e.comparison=ClaimComparison.assess(c?.query||e.claim||"",e);st.evidenceLedger=EvidenceNormalizer.dedupe([...st.evidenceLedger,e]);if(c&&!c.evidenceIds.includes(e.id))c.evidenceIds.push(e.id);await chrome.storage.local.set(st);await audit("EVIDENCE_ADDED",{caseId:m.caseId||null,evidenceId:e.id});return reply(e)}
+if(m.type==="SUBMIT_APPEAL"){const c=st.cases.find(x=>x.id===m.caseId);if(!c)return reply({error:"case_not_found"});const a={id:crypto.randomUUID(),caseId:c.id,createdAt:new Date().toISOString(),status:"OPEN",reason:(m.reason||"").slice(0,2000),requestedCorrection:(m.requestedCorrection||"").slice(0,2000),review:null};st.appeals.push(a);c.appealIds.push(a.id);c.status="APPEAL_OPEN";await chrome.storage.local.set(st);await audit("APPEAL_SUBMITTED",{caseId:c.id,appealId:a.id});return reply(a)}
+if(m.type==="REVIEW_APPEAL"){const a=st.appeals.find(x=>x.id===m.appealId);if(!a)return reply({error:"appeal_not_found"});a.status=m.decision==="accept"?"ACCEPTED":m.decision==="deny"?"DENIED":"MORE_EVIDENCE_REQUIRED";a.review={by:"Remedy",at:new Date().toISOString(),note:(m.note||"").slice(0,2000)};const c=st.cases.find(x=>x.id===a.caseId);if(c&&a.status==="ACCEPTED")c.status="CORRECTION_REQUIRED";await chrome.storage.local.set(st);await audit("APPEAL_REVIEWED",{appealId:a.id,status:a.status});return reply(a)}
+if(m.type==="APPLY_CORRECTION"){const c=st.cases.find(x=>x.id===m.caseId);if(!c)return reply({error:"case_not_found"});c.correction={at:new Date().toISOString(),by:"Remedy",text:(m.text||"").slice(0,3000)};c.status="CORRECTED";await chrome.storage.local.set(st);await audit("CORRECTION_APPLIED",{caseId:c.id});return reply(c)}
+if(m.type==="JUDGE_CASE"){const c=st.cases.find(x=>x.id===m.caseId);if(!c)return reply({error:"case_not_found"});const d=["approve","reject","needs_more_evidence"].includes(m.decision)?m.decision:"needs_more_evidence";c.status=d==="approve"?"APPROVED_FOR_AUDIT":d==="reject"?"REJECTED":"REVIEW_REQUIRED";c.confidence=Math.max(0,Math.min(100,Number(m.confidence)||0));c.decision={by:"Remedy",at:new Date().toISOString(),decision:d,note:m.note||""};await chrome.storage.local.set(st);await audit("JUDGE_DECISION",{caseId:c.id,decision:d});return reply(c)}
+if(m.type==="STAGE_DEPLOYMENT"){const d={id:crypto.randomUUID(),createdAt:new Date().toISOString(),version:"0.6.0",target:"staging",status:"STAGED",approvedCases:st.cases.filter(c=>["APPROVED_FOR_AUDIT","CORRECTED"].includes(c.status)).map(c=>c.id)};st.deployments.push(d);await chrome.storage.local.set(st);await audit("DEPLOYMENT_STAGED",{deploymentId:d.id});return reply(d)}
+if(m.type==="GET_STATE")return reply(st)
+})().catch(e=>reply({error:String(e)}));return true});

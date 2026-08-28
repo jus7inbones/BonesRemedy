@@ -1,0 +1,12 @@
+{
+  "project": "MetaTruth-Bones-Remedy",
+  "release": "0.6.0",
+  "rules": [
+    "Evidence is not automatically truth",
+    "No automatic public shaming/publication",
+    "Human review required",
+    "Explicit page capture",
+    "Corrections append to audit history",
+    "Staging before deployment"
+  ]
+}

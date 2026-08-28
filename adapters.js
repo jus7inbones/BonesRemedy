@@ -1,0 +1,1 @@
+const MetaAdapters=(()=>{const A=[["government",/\.(gov|gc\.ca)$/i],["academic",/\.edu$/i],["reference",/wikipedia\.org$/i]];function identify(url){try{const h=new URL(url).hostname;return ["page",...A.filter(x=>x[1].test(h)).map(x=>x[0])]}catch{return ["page"]}}return{identify}})();
