@@ -1,2 +1,1 @@
-document.getElementById("search").onclick=()=>chrome.tabs.create({url:chrome.runtime.getURL("landing.html")});
-document.getElementById("audit").onclick=()=>chrome.runtime.openOptionsPage();
+const $=id=>document.getElementById(id);$('openSearch').addEventListener('click',()=>chrome.tabs.create({url:chrome.runtime.getURL('landing.html')}));$('openAdmin').addEventListener('click',()=>chrome.tabs.create({url:chrome.runtime.getURL('admin.html')}));$('capture').addEventListener('click',async()=>{const r=await chrome.runtime.sendMessage({type:'CAPTURE_ACTIVE_TAB'});$('status').textContent=r?.error?`Capture failed: ${r.error}`:`Captured evidence ${r.id}`});
