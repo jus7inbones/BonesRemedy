@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "MetaTruth \u2014 Bones & Remedy",
-  "version": "0.4.0",
-  "description": "Evidence-first meta search, provenance capture, Remedy review, and staged audit deployment.",
+  "version": "0.5.0",
+  "description": "MetaTruth v0.5.0 \u2014 multi-source evidence normalization, deduplication, source-quality scoring, provenance matrix, and Remedy review.",
   "permissions": [
-    "storage",
     "activeTab",
+    "storage",
     "tabs"
   ],
   "host_permissions": [
